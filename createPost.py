@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-from flaskBlog import app, db, User, Post
+from flaskblog import app, db
+from flaskblog.models import User, Post
 
 with app.app_context():
     post1 = Post(title='blog 1', content='First Post content!', user_id = 1)
