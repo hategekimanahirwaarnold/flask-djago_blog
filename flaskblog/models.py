@@ -1,7 +1,8 @@
-from flaskblog import db, app, login_manager
+from flaskblog import db, login_manager
 from datetime import datetime, timezone, timedelta
 from flask_login import UserMixin
 import jwt
+from flask import current_app
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -21,7 +22,7 @@ class User(db.Model, UserMixin):
             "confirm": self.id,
             "exp": datetime.now(tz=timezone.utc) + timedelta(seconds=expires_sec)
         },
-            app.config['SECRET_KEY'],
+            current_app.config['SECRET_KEY'],
             algorithm="HS256"
         )
         return reset_token
@@ -32,7 +33,7 @@ class User(db.Model, UserMixin):
         try:
             data = jwt.decode(
                 token,
-                app.config['SECRET_KEY'],
+                current_app.config['SECRET_KEY'],
                 algorithms=["HS256"]
             )
         except:
@@ -59,6 +60,4 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.title}', '{self.date_posted}')"
-    
-with app.app_context():
-    db.create_all()
+ 
